@@ -1,0 +1,136 @@
+doctype html
+html.no-js(lang='en')
+head
+ meta(charset='utf-8')
+ meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+ meta(name="description", content=description)
+ meta(name="author", content=author)
+ meta(name="viewport", content='width=device-width, initial-scale=1')
+ link(href="/css/bootstrap.min.css",rel="stylesheet")
+ link(href="/css/simple-sidebar.css",rel="stylesheet")
+
+body
+    div(id="wrapper")
+     nav(class="navbar navbar-default")
+      div(class="container-fluid")
+       div(class="navbar-header")
+        button(type="button",class="navbar-toggle collapsed",data-toggle="collapse",data-target="#bs-example-navbar-collapse-1",aria-expanded="false")
+        span(class="sr-only") Toggle navigation
+        span(class="icon-bar")
+        span(class="icon-bar")
+        span(class="icon-bar")
+        img(class="navbar-brand",src="/images/logo.png")
+       p(class="navbar-text navbar-right") V1.0
+       div(class="collapse navbar-collapse",id="bs-example-navbar-collapse-1")
+        ul(class="nav nav-tabs")
+         li(class="active") 
+          a(href="/") Ecrans 
+         li
+          a(href="/medias") Médias 
+
+     <!-- Page Content -->
+     form(class="form-horizonal",action="/playlist",method="post",id="playlist")
+      div(id="page-content-wrapper")
+       div(class="container-fluid")
+        div(class="panel panel-default")
+         div(class="panel-heading") #{title} de #{tvid}
+         input(type="text",name="tvid",value="#{tvid}",hidden)
+         input(type="text",name="tvplaylist",id="tvplaylist",value="#{tv.playlist}",hidden)
+        div(class="form-group row")
+         div(class="col-md-5")
+          select(multiple,class="form-control",id="selFrom",size="10")
+           each media,index in medias
+            option(value="#{media}",ondblclick="javascript:add()") #{media}
+         div(class="col-md-2 center-block")
+          a(type="button",class="btn btn-primary col-md-12",style="margin-bottom: 10px;",href="javascript:add()")
+           span(class="glyphicon glyphicon glyphicon-arrow-right",aria-hidden="false")
+          a(type="button",class="btn btn-primary col-md-12",href="javascript:remove()")
+           span(class="glyphicon glyphicon glyphicon-arrow-left",aria-hidden="false")
+         div(class="col-md-5")
+          select(multiple,class="form-control",id="selTo",style="margin-bottom: 10px;",name="selTo[]",size="10")
+          a(type="button",class="btn btn-default col-md-5",href="javascript:up()")
+           span(class="glyphicon glyphicon glyphicon-arrow-up",aria-hidden="false")
+          span(class="col-md-2",aria-hidden="false")
+          a(type="button",class="btn btn-default col-md-5",href="javascript:down()")
+           span(class="glyphicon glyphicon glyphicon-arrow-down",aria-hidden="false")
+
+        div(class="btn-group",role="group")
+         a(type="button",name="ok",class="btn btn-success",href="javascript:valid()",data-toggle="tooltip",data-placement="top",title="Valider")
+          span(class="glyphicon glyphicon glyphicon-ok",aria-hidden="false")
+         button(type="submit",class="btn btn-default",name="cancel",data-toggle="tooltip",data-placement="top",title="Fermer")
+          span(class="glyphicon glyphicon glyphicon-remove",aria-hidden="false")
+
+    script(src="/js/jquery-1.11.1.min.js")
+    script(src="/js/bootstrap.min.js")
+    
+    script.
+     $(function(){
+         $("#selTo").bind("dblclick", function(){
+             remove();
+         });
+     });    
+     $("#menu-toggle").click(function(e) {
+         e.preventDefault();
+         $("#wrapper").toggleClass("toggled");
+     });
+     $(function () {
+       $('[data-toggle="tooltip"]').tooltip();
+     });
+     $(function () {
+       $('[data-toggle="popover"]').popover()
+     });
+     $(function () {
+       var playlist = document.querySelector("#tvplaylist").value;
+       if (playlist!="") {
+        var selTo = document.querySelector("#selTo");
+        var tabPlaylist = playlist.split(",");
+        for (var i = 0; i < tabPlaylist.length; i++) {
+            var newOption = new Option (tabPlaylist[i],tabPlaylist[i]);
+            selTo.options.add (newOption);
+        }
+       }
+     });
+
+     function add() {
+       var selFrom = document.querySelector("#selFrom");
+       var selTo = document.querySelector("#selTo");
+       for (var i = 0; i < selFrom.length; i++) {
+            if (selFrom[i].selected) {
+              var newOption = new Option (selFrom[i].text,selFrom[i].value);
+              selTo.options.add (newOption);
+            }
+       }
+     }
+     
+     function valid() {
+       var selTo = document.querySelector("#selTo");
+       for (var i = 0; i < selTo.length; i++) {
+         selTo[i].selected = true;
+       }
+       $('#playlist').submit(); 
+     }
+     
+     function remove() {
+       $('#selTo :selected').remove(); 
+     }
+      
+     function up() {
+       var $op = $('#selTo :selected'), $this = $(this);
+       if($op.length) {
+          $op.first().prev().before($op);
+         }
+        else {
+          $op.last().next().after($op);
+        }
+     }
+     
+     function down() {
+       var $op = $('#selTo :selected'), $this = $(this);
+       if($op.length) {
+          $op.first().next().after($op);
+         }
+        else {
+          $op.last().prev().before($op);
+        }
+        show();
+     }
