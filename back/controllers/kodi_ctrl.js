@@ -203,8 +203,8 @@ exports.isMuted = function(ip,cb) {
         if (error) {
            //console.log(error.code);
            //cb(error.code);
-           //cb('undefined');
-           cb('on');
+           cb('undefined');
+           //cb('on');
         } else {
            //body={"id":1,"jsonrpc":"2.0","result":[{"playerid":1,"type":"video"}]};
            //{"id":1,"jsonrpc":"2.0","result":[]}
