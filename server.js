@@ -14,6 +14,7 @@ var medias = require('./back/models/media');
 var kodi = require('./back/controllers/kodi_ctrl');
 var model = require('./back/controllers/model_ctrl');
 var bodyParser  = require('body-parser');
+var UPLOAD_DIR= process.env.UPLOAD_DIR;
 
 //
 // ## SimpleServer `SimpleServer(obj)`
@@ -27,7 +28,7 @@ var app = express();
       app.set('views', __dirname + '/front/views');
       app.set('view engine', 'jade');
       app.set('view options', { layout: false });
-      app.use(express.bodyParser( { keepExtensions: true, uploadDir: __dirname + '/uploads' } ));
+      app.use(express.bodyParser( { keepExtensions: true, uploadDir: UPLOAD_DIR } ));
       //app.use(bodyParser.urlencoded({ extended: false }));
       //app.use(bodyParser.json());
     });
